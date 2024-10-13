@@ -42,13 +42,14 @@ that the test will pass.
  └── target
 ```
 
-
 ## How to run
 
 1. Download this repository
 2. Download [Intellij](https://www.jetbrains.com/idea/download/)
    In theory, other IDEs or editors will do the trick as well, but the tests do not currently run with just using `mvn test -Dtest="org.done.flink.exercises.exercises.**"`...
 3. Open Intellij and then open this repository within.
+   - Be careful to set the project SDK to Java 11.
+   - Intellij might set it to Java 17 (or 18, ...) by default, which will lead to some Java reflection errors.
 4. Navigate to the exercise you want to do. 
 5. Solve it! (There is no try.)
 6. Test it! (Multiple options:)
@@ -56,3 +57,5 @@ that the test will pass.
    - click on the double arrow to run them all, or
    - in the file-browser on your left right-click on the folder, then select the green arrow where it says "Run 'Tests in ...'"
 7. Marvel at your genius! (Or despair.)
+
+The exercise [Ex00](./src/test/java/org/done/flink/exercises/exercises/cep/Ex00Test.java) gives you a complete example what you need to do.

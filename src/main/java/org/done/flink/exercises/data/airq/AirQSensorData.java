@@ -213,7 +213,6 @@ public class AirQSensorData implements Serializable {
         return deviceId;
     }
 
-
     /**
      * Helper build on top of the co2.
      * @return true, if co2 is within healthy range

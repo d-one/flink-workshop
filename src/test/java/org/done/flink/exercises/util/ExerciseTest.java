@@ -49,8 +49,12 @@ public class ExerciseTest {
 
             System.out.println("But you found:");
 
-            for (final Event e : actual) {
-                System.out.println(e);
+            if (actual.size() > 0) {
+                for (final Event e : actual) {
+                    System.out.println(e);
+                }
+            } else {
+                System.out.println("Nothing!");
             }
 
             System.out.println("Try again!");
@@ -66,8 +70,12 @@ public class ExerciseTest {
 
             System.out.println("But you found:");
 
-            for (final Event e : actual) {
-                System.out.println(e);
+            if (actual.size() > 0) {
+                for (final Event e : actual) {
+                    System.out.println(e);
+                }
+            } else {
+                System.out.println("Nothing!");
             }
             System.out.println("Try again!");
             return false;
