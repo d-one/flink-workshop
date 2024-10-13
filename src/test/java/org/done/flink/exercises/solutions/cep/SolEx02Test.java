@@ -16,6 +16,7 @@ import org.done.flink.exercises.data.airq.utils.DelayedSource;
 import org.done.flink.exercises.data.events.Event;
 import org.done.flink.exercises.data.events.EventType;
 import org.done.flink.exercises.util.ExerciseTest;
+import org.done.flink.exercises.util.Helper;
 import org.done.flink.exercises.util.LogWatermarkProcessFunction;
 import org.done.flink.exercises.util.cep.Ex02;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class SolEx02Test extends ExerciseTest {
     public void part1() throws Exception {
         final var input = prepareData(Ex02.data(), env);
 
-        printInput(input);
+        Helper.printCO2Input(input);
 
         Pattern<AirQSensorData, ?> dangerousCO2LevelsDetected = Pattern.<AirQSensorData>begin("begin")
                 .next("co2Healthy")
@@ -65,11 +66,7 @@ public class SolEx02Test extends ExerciseTest {
                 })
                 .executeAndCollect().forEachRemaining(output::add);
 
-
-        // If you want to debug something
-        for (final Event e : output) {
-            System.out.println(e);
-        }
+        Helper.printEvents(output);
 
         assertTrue(checkOutput("Ex02, Part 1", output, Ex02.getExpectedOutputPart1()));
     }
@@ -102,7 +99,7 @@ public class SolEx02Test extends ExerciseTest {
                                 .withTimestampAssigner((event, timestamp) -> event.deviceTimestamp.toEpochMilli())
                 );
 
-        printInput(input);
+        Helper.printCO2Input(input);
 
         Pattern<AirQSensorData, ?> dangerousCO2LevelsDetected = Pattern.<AirQSensorData>begin("begin")
                 .next("co2Healthy")
@@ -138,26 +135,14 @@ public class SolEx02Test extends ExerciseTest {
 
         // Retrieve late data
         DataStream<AirQSensorData> lateData = result.getSideOutput(lateDataOutputTag);
+
         // For debugging: Print late data for debugging
-        printInput(lateData);
+        Helper.printCO2Input(lateData);
 
         // Collect output events
         result.executeAndCollect().forEachRemaining(output::add);
 
-//        for (final Event e : output) {
-//            System.out.println(e);
-//        }
-
         assertTrue(checkOutput("Ex02, Part 2", output, Ex02.getExpectedOutputPart2()));
-    }
-
-    // Helper function to visualize input
-    protected static void printInput(DataStream<AirQSensorData> input) {
-        input.map(sensorData -> {
-            return "Device ID: " + sensorData.deviceId +
-                    ", Timestamp: " + sensorData.deviceTimestamp +
-                    ", CO2: " + sensorData.co2;
-        }).print();
     }
 }
 

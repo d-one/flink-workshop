@@ -4,6 +4,7 @@ import org.apache.flink.cep.CEP;
 import org.apache.flink.cep.functions.PatternProcessFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.util.Collector;
+import org.done.flink.exercises.util.Helper;
 import org.done.flink.exercises.util.cep.Ex01;
 import org.done.flink.exercises.data.airq.AirQSensorData;
 import org.done.flink.exercises.data.events.Event;
@@ -25,8 +26,12 @@ public class Ex01Test extends ExerciseTest {
         // Fetching your input here. It is a keyed, fixed stream of data. The key is the deviceId.
         final var input = prepareData(Ex01.dataPart1(), env);
 
+        // If you want to see the input
+        // Helper.printCO2Input(input);
+
         // The pattern of events that you want to capture.
-        Pattern<AirQSensorData, ?> newDeviceReadyPattern = Pattern.begin("deviceWarmUp");
+        // Be careful, the explicit type is necessary here (even if Intellij tells you otherwise).
+        Pattern<AirQSensorData, ?> newDeviceReadyPattern = Pattern.<AirQSensorData>begin("deviceWarmUp");
         // TODO add code here
 
         // Applying your pattern to the input and collecting it in the output variable.
@@ -43,9 +48,7 @@ public class Ex01Test extends ExerciseTest {
                 .executeAndCollect().forEachRemaining(output::add);
 
         // If you want to debug something
-        // for (final Event e : output) {
-        //     System.out.println(e);
-        // }
+        // Helper.printEvents(output);
 
         // Validating your output against the expected one. Did you miss anything?
         assertTrue(checkOutput("Ex01, Part 1", output, Ex01.getExpectedOutputPart1()));
@@ -63,7 +66,7 @@ public class Ex01Test extends ExerciseTest {
     public void part2() throws Exception {
         final var input = prepareData(Ex01.dataPart2(), env);
 
-        Pattern<AirQSensorData, ?> newDeviceReadyPattern = Pattern.begin("deviceWarmUp");
+        Pattern<AirQSensorData, ?> newDeviceReadyPattern = Pattern.<AirQSensorData>begin("deviceWarmUp");
         // TODO Add code here
 
         CEP.pattern(input, newDeviceReadyPattern)

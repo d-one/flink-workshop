@@ -5,14 +5,13 @@ import org.apache.flink.cep.functions.PatternProcessFunction;
 import org.apache.flink.cep.nfa.aftermatch.AfterMatchSkipStrategy;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.cep.pattern.conditions.SimpleCondition;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 import org.done.flink.exercises.data.airq.AirQSensorData;
 import org.done.flink.exercises.data.events.Event;
 import org.done.flink.exercises.data.events.EventType;
-import org.done.flink.exercises.util.cep.Ex01;
 import org.done.flink.exercises.util.ExerciseTest;
+import org.done.flink.exercises.util.cep.Ex01;
 import org.junit.Test;
 
 import java.util.List;
@@ -43,11 +42,6 @@ public class SolEx01Test extends ExerciseTest {
                 })
                 .executeAndCollect().forEachRemaining(output::add);
 
-        // If you want to debug something
-        // for (final Event e : output) {
-        //     System.out.println(e);
-        // }
-
         assertTrue(checkOutput("Ex01, Part 1", output, Ex01.getExpectedOutputPart1()));
     }
 
@@ -63,7 +57,6 @@ public class SolEx01Test extends ExerciseTest {
     public void part2() throws Exception {
         final var input = prepareData(Ex01.dataPart2(), env);
 
-        printInput(input);
         // Define the skip strategy to skip past the last event after a match
         AfterMatchSkipStrategy skipStrategy = AfterMatchSkipStrategy.skipPastLastEvent();
 
@@ -117,14 +110,5 @@ public class SolEx01Test extends ExerciseTest {
                 .executeAndCollect().forEachRemaining(output::add);
 
         assertTrue(checkOutput("Ex01, Part 3", output, Ex01.getExpectedOutputPart3()));
-    }
-
-    // Helper function to visualize input
-    protected static void printInput(DataStream<AirQSensorData> input) {
-        input.map(sensorData -> {
-            return "Device ID: " + sensorData.deviceId +
-                    ", Timestamp: " + sensorData.deviceTimestamp +
-                    ", Status: " + sensorData.status;
-        }).print();
     }
 }

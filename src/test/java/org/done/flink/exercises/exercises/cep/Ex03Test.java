@@ -5,6 +5,7 @@ import org.apache.flink.cep.functions.PatternProcessFunction;
 import org.apache.flink.cep.pattern.Pattern;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.util.Collector;
+import org.done.flink.exercises.util.Helper;
 import org.done.flink.exercises.util.cep.Ex03;
 import org.done.flink.exercises.data.events.Event;
 import org.done.flink.exercises.data.events.EventType;
@@ -45,7 +46,7 @@ public class Ex03Test extends ExerciseTest {
         // increaseInCo2.executeAndCollect(10).forEach(System.out::println);
 
         // The pattern where you detect an increase in the measurements. Which we interpret as an Event of type PERSON_HAS_ENTERED_THE_ROOM.
-        Pattern<MeasurementGradient, ?> gradientIncrease = Pattern.begin("begin");
+        Pattern<MeasurementGradient, ?> gradientIncrease = Pattern.<MeasurementGradient>begin("begin");
 
         CEP.pattern(increaseInCo2, gradientIncrease)
                 .process(new PatternProcessFunction<MeasurementGradient, Event>() {
@@ -58,7 +59,7 @@ public class Ex03Test extends ExerciseTest {
                 .executeAndCollect().forEachRemaining(output::add);
 
         // The pattern where you detect a fast decrease in the measurements. Which we interpret as an Event of type WINDOW_OPENED.
-        Pattern<MeasurementGradient, ?> windowOpeningPattern = Pattern.begin("begin");
+        Pattern<MeasurementGradient, ?> windowOpeningPattern = Pattern.<MeasurementGradient>begin("begin");
 
         CEP.pattern(increaseInCo2, windowOpeningPattern)
                 .process(new PatternProcessFunction<MeasurementGradient, Event>() {
@@ -71,9 +72,7 @@ public class Ex03Test extends ExerciseTest {
                 .executeAndCollect().forEachRemaining(output::add);
 
         // If you want to debug something
-        // for (final Event e : output) {
-        //     System.out.println(e);
-        // }
+        // Helper.printEvents(output);
 
         assertTrue(checkOutput("Ex03", output, Ex03.getExpectedOutput()));
     }

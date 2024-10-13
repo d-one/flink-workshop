@@ -53,6 +53,15 @@ public class AirQSensorDataSampleBuilder {
         return this;
     }
 
+    public AirQSensorDataSampleBuilder setTemperature(double value) {
+        base.temperature = value;
+        return this;
+    }
+
+    public AirQSensorDataSampleBuilder setHumidity(double value) {
+        base.humidity = value;
+        return this;
+    }
 
     public AirQSensorData build() {
         return base;

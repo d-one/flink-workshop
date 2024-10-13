@@ -12,10 +12,11 @@ import org.apache.flink.util.Collector;
 import org.done.flink.exercises.data.airq.AirQSensorData;
 import org.done.flink.exercises.data.events.Event;
 import org.done.flink.exercises.data.events.EventType;
-import org.done.flink.exercises.util.cep.Ex03;
 import org.done.flink.exercises.util.ExerciseTest;
+import org.done.flink.exercises.util.cep.Ex03;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,11 +58,18 @@ public class SolEx03Test extends ExerciseTest {
                     public MeasurementGradient getResult(List<AirQSensorData> accumulator) {
                         accumulator.sort(Comparator.comparing(a -> a.deviceTimestamp));
 
+                        var first = accumulator.get(0);
+                        var last = accumulator.get(accumulator.size() - 1);
+
+                        // NB.: The duration can be 0 -> how would you deal with this then?
+                        var gradient = (last.co2 - first.co2) / (Duration.between(first.deviceTimestamp, last.deviceTimestamp).toSeconds());
+
+                        // System.out.println("window: (" + first.deviceTimestamp + ", " + last.deviceTimestamp + "), co2: (" + first.co2 + ", " +  last.co2 + "), gradient: " + gradient);
+
                         return new MeasurementGradient(
-                                accumulator.get(0).deviceId,
-                                accumulator.get(0).deviceTimestamp,
-                                (accumulator.get(accumulator.size() - 1).co2 - accumulator.get(0).co2) / (windowSize * 60)
-                        );
+                                first.deviceId,
+                                first.deviceTimestamp,
+                                gradient);
                     }
 
                     @Override
@@ -77,9 +85,9 @@ public class SolEx03Test extends ExerciseTest {
         AfterMatchSkipStrategy skipStrategy = AfterMatchSkipStrategy.skipPastLastEvent();
 
         Pattern<MeasurementGradient, ?> pattern = Pattern.<MeasurementGradient>begin("begin", skipStrategy)
-                .where(SimpleCondition.of(x -> x.getCo2Gradient() < 0.2))
+                .where(SimpleCondition.of(x -> x.getCo2Gradient() < 0.25))
                 .next("fromOneToTwo")
-                .where(SimpleCondition.of(x -> x.getCo2Gradient() >= 0.2))
+                .where(SimpleCondition.of(x -> x.getCo2Gradient() >= 0.25))
                 .timesOrMore(2);
 
         CEP.pattern(increaseInCo2, pattern)
@@ -137,6 +145,4 @@ public class SolEx03Test extends ExerciseTest {
             return co2Gradient;
         }
     }
-
-    ;
 }
