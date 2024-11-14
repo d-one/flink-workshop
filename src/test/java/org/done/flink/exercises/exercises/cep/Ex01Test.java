@@ -83,7 +83,7 @@ public class Ex01Test extends ExerciseTest {
     }
 
     /**
-     * Similar to Part 2. But
+     * Similar to Part 2, and thus optional.
      * Detect when a device jumps back from being ready to warming up.
      */
     @Test
